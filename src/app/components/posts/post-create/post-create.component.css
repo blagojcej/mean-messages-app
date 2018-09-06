@@ -1,7 +1,10 @@
+/* We commented this because we added width and margin to the app.component.css */
+/*
 mat-card {
     width: 80%;
     margin: auto;
 }
+*/
 
 mat-form-field,
 textarea {
