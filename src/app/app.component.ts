@@ -1,3 +1,4 @@
+import { Post } from './models/post';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,9 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  storedPosts = [];
+  // We don't need binding after adding service
+  /*
+  storedPosts: Post[] = [];
 
   onPostAdded(post) {
     this.storedPosts.push(post);
   }
+  */
 }
