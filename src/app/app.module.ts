@@ -3,18 +3,19 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { 
-  MatInputModule, 
-  MatCardModule, 
-  MatButtonModule, 
+import {
+  MatInputModule,
+  MatCardModule,
+  MatButtonModule,
   MatToolbarModule,
-  MatExpansionModule 
+  MatExpansionModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { PostCreateComponent } from './components/posts/post-create/post-create.component';
 import { HeaderComponent } from './components/header/header.component';
 import { PostListComponent } from './components/posts/post-list/post-list.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { PostListComponent } from './components/posts/post-list/post-list.compon
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
-    MatExpansionModule
+    MatExpansionModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
