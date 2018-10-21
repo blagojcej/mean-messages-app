@@ -10,35 +10,50 @@ import { Router } from '@angular/router';
 })
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  // Commented after adding pagination
+  // private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{ posts: Post[], postCount: number }>();
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
-  getPosts() {
+  // Commented after adding pagination
+  // getPosts() {
+  getPosts(postsPerPage: number, currentPage: number) {
     // ([...]) Spread Operator -> Copy Array/Array Objects into new Array
     //  return [...this.posts];
 
+    const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
+
     // We can specify the type of get get<Post[]>('http:...)
     // At the moment the backend return json object with message and list of post objects
-    this.httpClient.get<{ message: string, posts: any }>('http://localhost:3000/api/posts')
+    // this.httpClient.get<{ message: string, posts: any }>('http://localhost:3000/api/posts')
+    this.httpClient.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3000/api/posts' + queryParams)
       .pipe(map((postData) => {
-        return postData.posts.map(post => {
-          return {
-            title: post.title,
-            content: post.content,
-            id: post._id,
-            imagePath: post.imagePath
-          };
-        });
+        return {
+          posts: postData.posts.map(post => {
+            return {
+              title: post.title,
+              content: post.content,
+              id: post._id,
+              imagePath: post.imagePath
+            };
+          }), maxPosts: postData.maxPosts
+        };
       }))
       // Commented after mapping the posts from server
       // .subscribe((postData) => {
-      .subscribe(transformedPosts => {
-        // Commented after mapping the posts from server
+      // Commented after adding pagination
+      // .subscribe(transformedPosts => {
+      .subscribe(transformedPostsData => {
+        // Commented after mapping the posts from server        
         // this.posts = postData.posts;
-        this.posts = transformedPosts;
+        // Commented after adding pagination
+        // this.posts = transformedPosts;
+        this.posts = transformedPostsData.posts;
         // We send the copy of the posts, so we can't edit posts
-        this.postsUpdated.next([...this.posts]);
+        // Commented after adding pagination
+        // this.postsUpdated.next([...this.posts]);
+        this.postsUpdated.next({ posts: [...this.posts], postCount: transformedPostsData.maxPosts });
       });
   }
 
@@ -66,9 +81,10 @@ export class PostsService {
 
     this.httpClient.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
       .subscribe((responseData) => {
-        const post: Post = { id: responseData.post.id, title: responseData.post.title, content: responseData.post.content, imagePath: responseData.post.id };
-        this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
+        // Commented because we're navigation to different page
+        // const post: Post = { id: responseData.post.id, title: responseData.post.title, content: responseData.post.content, imagePath: responseData.post.id };
+        // this.posts.push(post);
+        // this.postsUpdated.next([...this.posts]);
         this.router.navigate(['/'])
 
         // Commented after adding upload image functionality
@@ -123,17 +139,20 @@ export class PostsService {
         // set post array to be equal to cloned array
         this.posts = updatedPost;
         // tell to all subscribers about changed post array
-        this.postsUpdated.next([...updatedPost]);
+        // Commented because we're navigation to different page
+        // this.postsUpdated.next([...updatedPost]);
         this.router.navigate(['/'])
       });
   }
 
   deletePost(postId: string) {
-    this.httpClient.delete('http://localhost:3000/api/posts/' + postId)
-      .subscribe(() => {
-        const updatedPosts = this.posts.filter(post => post.id !== postId);
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-      });
+    return this.httpClient.delete('http://localhost:3000/api/posts/' + postId);
+    // Commented after adding pagination
+    // this.httpClient.delete('http://localhost:3000/api/posts/' + postId)
+    //   .subscribe(() => {
+    //     const updatedPosts = this.posts.filter(post => post.id !== postId);
+    //     this.posts = updatedPosts;
+    //     this.postsUpdated.next([...this.posts]);
+    //   });
   }
 }

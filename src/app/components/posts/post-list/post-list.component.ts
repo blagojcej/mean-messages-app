@@ -2,6 +2,7 @@ import { Post } from './../../../models/post';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { PostsService } from '../../../services/posts.service';
 import { Subscription } from 'rxjs';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-post-list',
@@ -13,7 +14,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   // @Input() posts: Post[] = [];
   posts: Post[] = [];
   private postSub: Subscription;
-  isLoading=false;
+  isLoading = false;
+  totalPosts = 10;
+  postsPerPage = 2;
+  pageSizeOptions = [1, 2, 5, 10];
+  currentPage = 1;
 
   /*
   posts = [
@@ -33,7 +38,12 @@ export class PostListComponent implements OnInit, OnDestroy {
   */
 
   onDelete(postId: string) {
-    this.postsService.deletePost(postId);
+    this.isLoading = true;
+    this.postsService.deletePost(postId)
+      // Subscribe after adding pagination
+      .subscribe(() => {
+        this.postsService.getPosts(this.postsPerPage, this.currentPage);
+      });
   }
 
   ngOnDestroy(): void {
@@ -46,13 +56,27 @@ export class PostListComponent implements OnInit, OnDestroy {
     // this.posts = this.postsService.getPosts();
     // We are not returning the posts, we are subscribing
 
-    this.isLoading=true;
-    this.postsService.getPosts();
+    this.isLoading = true;
+    // Commented after adding pagination
+    // this.postsService.getPosts();
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.postSub = this.postsService.getPostUpdateListener()
-    .subscribe((posts: Post[]) => {
-      this.isLoading=false;
-      this.posts = posts;
-    });
+      // Commented after adding pagination
+      // .subscribe((posts: Post[]) => {
+      .subscribe((postData: {posts: Post[], postCount: number}) => {
+        this.isLoading = false;
+        // Commented after adding pagination
+        // this.posts = posts;
+        this.posts = postData.posts;
+        //Added after adding pagination
+        this.totalPosts=postData.postCount;
+      });
   }
 
+  onChangedPage(pageData: PageEvent) {
+    this.isLoading = true;
+    this.currentPage = pageData.pageIndex + 1;
+    this.postsPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
+  }
 }

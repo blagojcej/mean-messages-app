@@ -90,18 +90,36 @@ router.get("", (req, res, next) => {
   //     { id: 'gfsg132fds1g3f', title: 'Second sever-side post', content: 'This is comming from the server!'}
   // ];
 
-  Post.find()
+  // console.log(req.query);
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  const postQuery = Post.find();
+  let fetchedPosts;
+
+  if (pageSize && currentPage) {
+    postQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
+  // Changed when implemented pagination
+  // Post.find()
+  postQuery.find()
     .then(documents => {
+      fetchedPosts = documents;
+      return Post.count();
+      // console.log(documents);
+    })
+    .then(count => {
       res.status(200).json({
         message: 'Posts fetched successfully!',
-        posts: documents
-      });
-      // console.log(documents);
+        posts: fetchedPosts,
+        maxPosts: count
+      })
     });
 });
 
 router.get("/:id", (req, res, next) => {
-  console.log(req.params.id);
+  // console.log(req.params.id);
   Post.findById(req.params.id)
     .then(post => {
       if (post) {
