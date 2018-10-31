@@ -19,18 +19,22 @@ import { HeaderComponent } from './components/header/header.component';
 import { PostListComponent } from './components/posts/post-list/post-list.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+import { LoginComponent } from './components/auth/login/login.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PostCreateComponent,
     HeaderComponent,
-    PostListComponent
+    PostListComponent,
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
     // For template driven forms
-    // FormsModule,
+    FormsModule,
     BrowserAnimationsModule,
     MatInputModule,
     MatCardModule,
@@ -40,6 +44,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatProgressSpinnerModule,
     HttpClientModule,
     AppRoutingModule,
+    // For reactive forms
     ReactiveFormsModule,
     MatPaginatorModule
   ],

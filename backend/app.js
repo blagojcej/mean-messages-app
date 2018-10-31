@@ -4,10 +4,11 @@ const mongoose = require('mongoose');
 const path = require('path');
 
 const postsRoutes = require('./routes/posts');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
-mongoose.connect("mongodb+srv://blagojce:3tj4mVJUCxn6S0h4@cluster0-lp7jo.mongodb.net/mean-messages-app?retryWrites=true")
+mongoose.connect("mongodb+srv://blagojce:3tj4mVJUCxn6S0h4@cluster0-lp7jo.mongodb.net/mean-messages-app")
   .then(() => {
     console.log('Connected to database!');
   })
@@ -43,5 +44,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postsRoutes);
+app.use("/api/auth", authRoutes);
 
 module.exports = app;
