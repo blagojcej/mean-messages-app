@@ -4,6 +4,10 @@
   <!-- We don't need binding after adding service -->
   <!-- <app-post-create (postCreated)="onPostAdded($event)"></app-post-create>
   <app-post-list [posts]="storedPosts"></app-post-list> -->
-  <app-post-create></app-post-create>
-  <app-post-list></app-post-list>
+
+  <!-- Create and view newly created messages at one place -->
+  <!-- <app-post-create></app-post-create>
+  <app-post-list></app-post-list> -->
+
+  <router-outlet></router-outlet>
 </main>
