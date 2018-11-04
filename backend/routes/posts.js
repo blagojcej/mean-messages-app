@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
 const Post = require('../models/post');
 
 //Multer will try to extract image from request body property "image"
-router.post("", multer({ storage: storage }).single("image"), (req, res, next) => {
+router.post("", checkAuth, multer({ storage: storage }).single("image"), (req, res, next) => {
   const url = req.protocol + '://' + req.get("host");
   // const post=req.body;
   const post = new Post({
@@ -58,7 +59,7 @@ router.post("", multer({ storage: storage }).single("image"), (req, res, next) =
     });
 });
 
-router.put("/:id", multer({ storage: storage }).single("image"), (req, res, next) => {
+router.put("/:id", checkAuth, multer({ storage: storage }).single("image"), (req, res, next) => {
 
   let imagePath = req.body.imagePath;
   if (req.file) {
@@ -131,7 +132,7 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", checkAuth, (req, res, next) => {
   Post.deleteOne({
     _id: req.params.id
   })
