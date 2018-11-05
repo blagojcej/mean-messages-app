@@ -37,8 +37,13 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), (req, r
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + "/images/" + req.file.filename
+    imagePath: url + "/images/" + req.file.filename,
+    // Added field userData in check-auth middleware
+    creator: req.userData.userId
   });
+  //To test userData field in check-auth middleware, and not to save post to database
+  // console.log(req.userData);
+  // return res.status(200).json({});
   post.save()
     .then(result => {
       console.log(result);
@@ -72,15 +77,25 @@ router.put("/:id", checkAuth, multer({ storage: storage }).single("image"), (req
     _id: req.body.id,
     title: req.body.title,
     content: req.body.content,
-    imagePath: imagePath
+    imagePath: imagePath,
+    creator: req.userData.userId
   });
-  console.log(post);
-  Post.updateOne({ _id: req.params.id }, post)
+  // console.log(post);
+
+  // Added field userData in check-auth middleware
+  Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post)
     .then(result => {
       // console.log(result);
-      res.status(200).json({
-        message: "Update successful!"
-      });
+      if (result.nModified > 0) {
+        res.status(200).json({
+          message: "Update successful!"
+        });
+      } else {
+        res.status(401).json({
+          message: "Not authorized!"
+        });
+      }
+
     })
 });
 
@@ -134,13 +149,20 @@ router.get("/:id", (req, res, next) => {
 
 router.delete("/:id", checkAuth, (req, res, next) => {
   Post.deleteOne({
-    _id: req.params.id
+    _id: req.params.id,
+    creator: req.userData.userId
   })
     .then(result => {
-      console.log(result);
-      res.status(200).json({
-        message: "Post deleted!"
-      });
+      // console.log(result);
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Deletion successful!"
+        });
+      } else {
+        res.status(401).json({
+          message: "Not authorized!"
+        });
+      }
     });
 });
 

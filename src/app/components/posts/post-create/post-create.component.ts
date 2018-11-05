@@ -48,7 +48,7 @@ export class PostCreateComponent implements OnInit {
             .subscribe(postData => {
               //Hide spinner
               this.isLoading = false;
-              this.post = { id: postData._id, title: postData.title, content: postData.content, imagePath: postData.imagePath };
+              this.post = { id: postData._id, title: postData.title, content: postData.content, imagePath: postData.imagePath, creator: postData.creator };
               //Populate the form
               this.form.setValue({
                 'title': this.post.title,

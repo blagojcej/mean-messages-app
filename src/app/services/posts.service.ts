@@ -35,7 +35,8 @@ export class PostsService {
               title: post.title,
               content: post.content,
               id: post._id,
-              imagePath: post.imagePath
+              imagePath: post.imagePath,
+              creator: post.creator
             };
           }), maxPosts: postData.maxPosts
         };
@@ -45,6 +46,9 @@ export class PostsService {
       // Commented after adding pagination
       // .subscribe(transformedPosts => {
       .subscribe(transformedPostsData => {
+
+        console.log(transformedPostsData);
+
         // Commented after mapping the posts from server        
         // this.posts = postData.posts;
         // Commented after adding pagination
@@ -65,7 +69,7 @@ export class PostsService {
     // We're returning new object, because we want to clone the returned object
     // We dont get post from memory because if we're refreshing the page, the post will be empty
     // return { ...this.posts.find(p => p.id === id) };
-    return this.httpClient.get<{ _id: string, title: string, content: string, imagePath: string }>('http://localhost:3000/api/posts/' + id);
+    return this.httpClient.get<{ _id: string, title: string, content: string, imagePath: string, creator: string }>('http://localhost:3000/api/posts/' + id);
   }
 
   addPost(title: string, content: string, image: File) {
@@ -114,7 +118,7 @@ export class PostsService {
       postData.append("content", content);
       postData.append("image", image, title);
     } else {
-      postData = { id: id, title: title, content: content, imagePath: image };
+      postData = { id: id, title: title, content: content, imagePath: image, creator: null };
     }
 
     // Commented after adding upload image functionality
@@ -133,7 +137,8 @@ export class PostsService {
           title: title,
           content: content,
           // imagePath: response.imagePath
-          imagePath: ""
+          imagePath: "",
+          creator: null
         };
         updatedPost[oldPostIndex] = post;
         // set post array to be equal to cloned array
