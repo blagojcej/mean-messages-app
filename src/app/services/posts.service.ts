@@ -47,7 +47,7 @@ export class PostsService {
       // .subscribe(transformedPosts => {
       .subscribe(transformedPostsData => {
 
-        console.log(transformedPostsData);
+        // console.log(transformedPostsData);
 
         // Commented after mapping the posts from server        
         // this.posts = postData.posts;

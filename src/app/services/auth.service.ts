@@ -34,10 +34,19 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const authData: AuthData = { email: email, password: password };
-    this.http.post('http://localhost:3000/api/auth/signup', authData)
-      .subscribe(responese => {
-        console.log(responese);
-      })
+    return this.http.post('http://localhost:3000/api/auth/signup', authData)
+      .subscribe(() => {
+        this.router.navigate(['/']);
+      }, error => {
+        this.authStatusListener.next(false);
+      });
+    // Because we're returning observable, we're not subscribing here, we're subscribing in component
+    //return this.http.post('http://localhost:3000/api/auth/signup', authData);
+    //// .subscribe(responese => {
+    ////   console.log(responese);
+    //// }, error => {
+    ////   console.log(error);
+    //// });
   }
 
   login(email: string, password: string) {
@@ -66,6 +75,8 @@ export class AuthService {
           this.saveAuthData(token, expirationDate, this.userId);
           this.router.navigate(['/create']);
         }
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 

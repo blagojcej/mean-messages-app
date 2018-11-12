@@ -49,6 +49,8 @@ export class PostListComponent implements OnInit, OnDestroy {
       // Subscribe after adding pagination
       .subscribe(() => {
         this.postsService.getPosts(this.postsPerPage, this.currentPage);
+      }, () => {
+        this.isLoading = false;
       });
   }
 
@@ -65,7 +67,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     // Commented after adding pagination
     // this.postsService.getPosts();
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
-    this.userId=this.authService.getUserId();
+    this.userId = this.authService.getUserId();
     this.postSub = this.postsService.getPostUpdateListener()
       // Commented after adding pagination
       // .subscribe((posts: Post[]) => {
@@ -82,7 +84,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.authSub = this.authService.getAuthStatusListener()
       .subscribe(isAuthenticated => {
         this.userIsAuthenticated = isAuthenticated;
-        this.userId=this.authService.getUserId();
+        this.userId = this.authService.getUserId();
       });
   }
 

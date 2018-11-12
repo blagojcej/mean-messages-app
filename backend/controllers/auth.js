@@ -1,22 +1,9 @@
-const express = require('express');
-
-// Commented after created controllers at backend
-/*
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-*/
 
-const AuthController = require('../controllers/auth');
-
-const router = express.Router();
-
-router.post('/signup', AuthController.createUser);
-
-// Commented after created controllers at backend
-/*
-router.post('/signup', (req, res, next) => {
+exports.createUser = (req, res, next) => {
 
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
@@ -42,14 +29,9 @@ router.post('/signup', (req, res, next) => {
                         });
                 });
         });
-});
-*/
+}
 
-router.post('/login', AuthController.userLogin);
-
-// Commented after created controllers at backend
-/*
-router.post('/login', (req, res, next) => {
+exports.userLogin = (req, res, next) => {
     let fetchedUser;
 
     User.findOne({ email: req.body.email })
@@ -95,7 +77,4 @@ router.post('/login', (req, res, next) => {
                 message: 'Invalid authentication credentials!'
             });
         });
-});
-*/
-
-module.exports = router;
+}
