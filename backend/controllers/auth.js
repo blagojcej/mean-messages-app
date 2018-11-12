@@ -60,7 +60,7 @@ exports.userLogin = (req, res, next) => {
             }
 
             // If comparing is successful create json web token
-            const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, 'secret_this_should_be_longer', { expiresIn: '1h' });
+            const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, process.env.JWT_KEY, { expiresIn: '1h' });
 
             //we don't need return statement, because we have no other code below
             console.log(token);
