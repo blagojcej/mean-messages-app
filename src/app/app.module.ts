@@ -14,30 +14,27 @@ import { AuthInterceptor } from './services/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
 import { ErrorComponent } from './components/error/error.component';
 import { AngularMaterialModule } from './angular-material.module';
+import { PostModule } from './components/posts/post.module';
+import { AuthModule } from './components/auth/auth.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostCreateComponent,
     HeaderComponent,
-    PostListComponent,
-    LoginComponent,
-    SignupComponent,
     ErrorComponent
   ],
   imports: [
     BrowserModule,
-    // For template driven forms
-    FormsModule,
-    BrowserAnimationsModule,    
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    // For reactive forms
-    ReactiveFormsModule,
-    AngularMaterialModule    
+    AngularMaterialModule,
+    PostModule,
+    // Commented after adding lazy loading child routes
+    // AuthModule
   ],
   providers: [
-    //with multi: true, we tell to Angular to doesn't override exiting interceptors, add additional one instead 
+    // with multi: true, we tell to Angular to doesn't override exiting interceptors, add additional one instead 
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

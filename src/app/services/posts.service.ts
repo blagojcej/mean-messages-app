@@ -1,9 +1,12 @@
+import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Post } from '../models/post';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+
+const BACKEND_URL = environment.apiUrl + '/posts/';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +30,7 @@ export class PostsService {
     // We can specify the type of get get<Post[]>('http:...)
     // At the moment the backend return json object with message and list of post objects
     // this.httpClient.get<{ message: string, posts: any }>('http://localhost:3000/api/posts')
-    this.httpClient.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3000/api/posts' + queryParams)
+    this.httpClient.get<{ message: string, posts: any, maxPosts: number }>(BACKEND_URL + queryParams)
       .pipe(map((postData) => {
         return {
           posts: postData.posts.map(post => {
@@ -49,7 +52,7 @@ export class PostsService {
 
         // console.log(transformedPostsData);
 
-        // Commented after mapping the posts from server        
+        // Commented after mapping the posts from server
         // this.posts = postData.posts;
         // Commented after adding pagination
         // this.posts = transformedPosts;
@@ -69,27 +72,27 @@ export class PostsService {
     // We're returning new object, because we want to clone the returned object
     // We dont get post from memory because if we're refreshing the page, the post will be empty
     // return { ...this.posts.find(p => p.id === id) };
-    return this.httpClient.get<{ _id: string, title: string, content: string, imagePath: string, creator: string }>('http://localhost:3000/api/posts/' + id);
+    return this.httpClient.get<{ _id: string, title: string, content: string, imagePath: string, creator: string }>(BACKEND_URL + id);
   }
 
   addPost(title: string, content: string, image: File) {
     const postData = new FormData();
-    postData.append("title", title);
-    postData.append("content", content);
+    postData.append('title', title);
+    postData.append('content', content);
     // The name "image" MUST BE  the same as the backend server excpect, check in post.js in post request
-    postData.append("image", image, title);
+    postData.append('image', image, title);
 
     // Commented after adding upload image functionality
     // const post: Post = { id: null, title: title, content: content };
     // this.httpClient.post<{ message: string, postId: string }>('http://localhost:3000/api/posts', post)
 
-    this.httpClient.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
+    this.httpClient.post<{ message: string, post: Post }>(BACKEND_URL, postData)
       .subscribe((responseData) => {
         // Commented because we're navigation to different page
         // const post: Post = { id: responseData.post.id, title: responseData.post.title, content: responseData.post.content, imagePath: responseData.post.id };
         // this.posts.push(post);
         // this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/'])
+        this.router.navigate(['/']);
 
         // Commented after adding upload image functionality
         // // console.log(responseData.message);
@@ -111,22 +114,22 @@ export class PostsService {
     // const post: Post = { id: id, title: title, content: content, imagePath: null };
     let postData: Post | FormData;
     if (typeof (image) === 'object') {
-      //Create FormData object
+      // Create FormData object
       postData = new FormData();
-      postData.append("id", id);
-      postData.append("title", title);
-      postData.append("content", content);
-      postData.append("image", image, title);
+      postData.append('id', id);
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, title);
     } else {
       postData = { id: id, title: title, content: content, imagePath: image, creator: null };
     }
 
     // Commented after adding upload image functionality
     // this.httpClient.put('http://localhost:3000/api/posts/' + id, post)
-    this.httpClient.put('http://localhost:3000/api/posts/' + id, postData)
+    this.httpClient.put(BACKEND_URL + id, postData)
       .subscribe(response => {
         console.log(response)
-        //IMPORTANT: If we're not visiting the posts page at all, there will be no posts
+        // IMPORTANT: If we're not visiting the posts page at all, there will be no posts
         // clone post array
         const updatedPost = [...this.posts];
         // search for old post version by id
@@ -151,7 +154,7 @@ export class PostsService {
   }
 
   deletePost(postId: string) {
-    return this.httpClient.delete('http://localhost:3000/api/posts/' + postId);
+    return this.httpClient.delete(BACKEND_URL + postId);
     // Commented after adding pagination
     // this.httpClient.delete('http://localhost:3000/api/posts/' + postId)
     //   .subscribe(() => {
